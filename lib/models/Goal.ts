@@ -2,15 +2,29 @@ import mongoose, { Schema } from "mongoose";
 
 const goalSchema = new Schema(
   {
-    name: { type: String, required: true },
-    description: String,
-    color: String,
-    status: {
+    name: {
       type: String,
-      enum: ["pending", "in-progress", "completed"],
-      default: "pending",
+      required: [true, "Goal name is required"],
+      trim: true,
     },
-    dueDate: Date,
+    color: {
+      type: String,
+      default: "blue",
+      enum: [
+        "blue",
+        "green",
+        "purple",
+        "yellow",
+        "pink",
+        "orange",
+        "red",
+        "gray",
+      ],
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   {
     timestamps: true,

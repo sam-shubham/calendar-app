@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useState, useRef, JSX } from "react";
 import { useDrag } from "react-dnd";
 import { useDispatch } from "react-redux";
 import type { Event } from "@/lib/types";
@@ -14,9 +14,19 @@ interface CalendarEventProps {
   onEventSelect: (event: Event) => void;
 }
 
+const CATEGORY_ICONS: Record<string, JSX.Element> = {
+  exercise: <span className="text-green-600">🏃</span>,
+  eating: <span className="text-yellow-600">🍽️</span>,
+  work: <span className="text-blue-600">💼</span>,
+  relax: <span className="text-purple-600">🧘</span>,
+  family: <span className="text-pink-600">👪</span>,
+  social: <span className="text-orange-600">🎉</span>,
+};
+
 const CalendarEvent = ({ event, onEventSelect }: CalendarEventProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isExpanded, setIsExpanded] = useState(false);
+  const eventRef = useRef<HTMLDivElement>(null);
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "EVENT",
@@ -25,6 +35,9 @@ const CalendarEvent = ({ event, onEventSelect }: CalendarEventProps) => {
       isDragging: !!monitor.isDragging(),
     }),
   }));
+
+  // Connect drag to the ref
+  drag(eventRef);
 
   const getCategoryColor = (category: string) => {
     switch (category.toLowerCase()) {
@@ -56,10 +69,12 @@ const CalendarEvent = ({ event, onEventSelect }: CalendarEventProps) => {
 
   const calculateEventTop = () => {
     const start = new Date(event.startTime);
+    const hours = start.getHours();
     const minutes = start.getMinutes();
 
+    // Calculate total minutes from beginning of day, then convert to pixels
     // Each hour is 64px (h-16), so 1 minute is 64/60 = 1.067px
-    return `${minutes * 1.067}px`;
+    return `${(hours - 7) * 64 + minutes * 1.067}px`;
   };
 
   const handleClick = (e: React.MouseEvent) => {
@@ -72,9 +87,11 @@ const CalendarEvent = ({ event, onEventSelect }: CalendarEventProps) => {
     setIsExpanded(!isExpanded);
   };
 
+  const categoryIcon = CATEGORY_ICONS[event.category.toLowerCase()] || null;
+
   return (
     <div
-      ref={drag}
+      ref={eventRef}
       className={cn(
         "absolute left-0 right-0 mx-1 p-1 rounded border-l-4 cursor-pointer text-xs overflow-hidden",
         getCategoryColor(event.category),
@@ -88,7 +105,10 @@ const CalendarEvent = ({ event, onEventSelect }: CalendarEventProps) => {
       onClick={handleClick}
     >
       <div className="flex justify-between items-center">
-        <span className="font-medium truncate">{event.title}</span>
+        <span className="font-medium truncate flex items-center">
+          {categoryIcon && <span className="mr-1">{categoryIcon}</span>}
+          {event.title}
+        </span>
         <button onClick={handleToggleExpand} className="text-xs">
           {isExpanded ? "−" : "+"}
         </button>

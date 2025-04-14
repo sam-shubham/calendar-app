@@ -1,44 +1,49 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { addDays, format, subDays, addMonths, subMonths } from "date-fns"
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { addDays, format, subDays, addMonths, subMonths } from "date-fns";
 
 interface CalendarHeaderProps {
-  currentDate: Date
-  view: "day" | "week" | "month" | "year"
-  onDateChange: (date: Date) => void
-  onViewChange: (view: "day" | "week" | "month" | "year") => void
+  currentDate: Date;
+  view: "day" | "week" | "month" | "year";
+  onDateChange: (date: Date) => void;
+  onViewChange: (view: "day" | "week") => void;
 }
 
-const CalendarHeader = ({ currentDate, view, onDateChange, onViewChange }: CalendarHeaderProps) => {
+const CalendarHeader = ({
+  currentDate,
+  view,
+  onDateChange,
+  onViewChange,
+}: CalendarHeaderProps) => {
   const navigatePrevious = () => {
     if (view === "day") {
-      onDateChange(subDays(currentDate, 1))
+      onDateChange(subDays(currentDate, 1));
     } else if (view === "week") {
-      onDateChange(subDays(currentDate, 7))
+      onDateChange(subDays(currentDate, 7));
     } else if (view === "month") {
-      onDateChange(subMonths(currentDate, 1))
+      onDateChange(subMonths(currentDate, 1));
     } else {
-      onDateChange(new Date(currentDate.getFullYear() - 1, 0, 1))
+      onDateChange(new Date(currentDate.getFullYear() - 1, 0, 1));
     }
-  }
+  };
 
   const navigateNext = () => {
     if (view === "day") {
-      onDateChange(addDays(currentDate, 1))
+      onDateChange(addDays(currentDate, 1));
     } else if (view === "week") {
-      onDateChange(addDays(currentDate, 7))
+      onDateChange(addDays(currentDate, 7));
     } else if (view === "month") {
-      onDateChange(addMonths(currentDate, 1))
+      onDateChange(addMonths(currentDate, 1));
     } else {
-      onDateChange(new Date(currentDate.getFullYear() + 1, 0, 1))
+      onDateChange(new Date(currentDate.getFullYear() + 1, 0, 1));
     }
-  }
+  };
 
   const goToToday = () => {
-    onDateChange(new Date())
-  }
+    onDateChange(new Date());
+  };
 
   return (
     <div className="flex items-center justify-between p-4 border-b">
@@ -62,21 +67,21 @@ const CalendarHeader = ({ currentDate, view, onDateChange, onViewChange }: Calen
         </h2>
       </div>
       <div className="flex space-x-2">
-        <Button variant={view === "day" ? "default" : "outline"} onClick={() => onViewChange("day")}>
+        <Button
+          variant={view === "day" ? "default" : "outline"}
+          onClick={() => onViewChange("day")}
+        >
           Day
         </Button>
-        <Button variant={view === "week" ? "default" : "outline"} onClick={() => onViewChange("week")}>
+        <Button
+          variant={view === "week" ? "default" : "outline"}
+          onClick={() => onViewChange("week")}
+        >
           Week
-        </Button>
-        <Button variant={view === "month" ? "default" : "outline"} onClick={() => onViewChange("month")}>
-          Month
-        </Button>
-        <Button variant={view === "year" ? "default" : "outline"} onClick={() => onViewChange("year")}>
-          Year
         </Button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CalendarHeader
+export default CalendarHeader;

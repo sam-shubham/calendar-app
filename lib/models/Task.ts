@@ -2,15 +2,28 @@ import mongoose, { Schema } from "mongoose";
 
 const taskSchema = new Schema(
   {
-    name: { type: String, required: true },
-    description: String,
-    completed: { type: Boolean, default: false },
-    goalId: Schema.Types.ObjectId,
-    dueDate: Date,
-    priority: {
+    name: {
       type: String,
-      enum: ["low", "medium", "high"],
-      default: "medium",
+      required: [true, "Task name is required"],
+      trim: true,
+    },
+    description: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    completed: {
+      type: Boolean,
+      default: false,
+    },
+    goalId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Goal",
+      required: [true, "Goal ID is required"],
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
     },
   },
   {
